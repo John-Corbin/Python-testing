@@ -1,0 +1,88 @@
+import pygame
+import sys
+import random
+
+# Initialize pygame
+pygame.init()
+
+# Constants
+WIDTH, HEIGHT = 800, 600
+CELL_SIZE = 40
+ROWS = HEIGHT // CELL_SIZE
+COLS = WIDTH // CELL_SIZE
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+YELLOW = (255, 255, 0)
+BLUE = (0, 0, 255)
+PACMAN_SPEED = 5
+
+# Classes
+class Pacman:
+    def __init__(self):
+        self.x = WIDTH // 2
+        self.y = HEIGHT // 2
+        self.direction = "right"
+    
+    def draw(self):
+        pygame.draw.circle(screen, YELLOW, (self.x, self.y), CELL_SIZE // 2)
+
+    def move(self):
+        if self.direction == "right":
+            self.x += PACMAN_SPEED
+        elif self.direction == "left":
+            self.x -= PACMAN_SPEED
+        elif self.direction == "up":
+            self.y -= PACMAN_SPEED
+        elif self.direction == "down":
+            self.y += PACMAN_SPEED
+
+class Ghost:
+    def __init__(self):
+        self.x = random.randint(0, COLS - 1) * CELL_SIZE
+        self.y = random.randint(0, ROWS - 1) * CELL_SIZE
+        self.color = BLUE
+
+    def draw(self):
+        pygame.draw.rect(screen, self.color, (self.x, self.y, CELL_SIZE, CELL_SIZE))
+
+# Initialize screen
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Pacman")
+
+# Create objects
+pacman = Pacman()
+ghost = Ghost()
+
+# Game loop
+running = True
+while running:
+    screen.fill(BLACK)
+    
+    # Handle events
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
+                pacman.direction = "up"
+            elif event.key == pygame.K_DOWN:
+                pacman.direction = "down"
+            elif event.key == pygame.K_LEFT:
+                pacman.direction = "left"
+            elif event.key == pygame.K_RIGHT:
+                pacman.direction = "right"
+
+    # Move Pacman
+    pacman.move()
+
+    # Draw objects
+    pacman.draw()
+    ghost.draw()
+
+    # Update display
+    pygame.display.flip()
+    pygame.time.Clock().tick(30)
+
+# Quit pygame
+pygame.quit()
+sys.exit()
